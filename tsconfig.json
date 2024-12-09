@@ -1,0 +1,39 @@
+// The config is extended from the base config: https://github.com/tsconfig/bases/blob/main/bases/node22.json
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Node 22",
+  "_version": "22.12.0",
+
+  "compilerOptions": {
+    /* Base Options: */
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+
+    /* Strictness */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noImplicitAny": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Transpilation with Typescript */
+    "module": "NodeNext",
+    "sourceMap": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    /* Path Mapping */
+    "baseUrl": "./",
+    "paths": {
+      "src/*": ["src/*"]
+    }
+  },
+  "include": ["src"]
+}

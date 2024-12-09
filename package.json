@@ -1,0 +1,46 @@
+{
+  "name": "node-express-ts-esm-starter",
+  "version": "2.2.2",
+  "description": "Node.js, Express and TypeScript with ES Modules Starter Template",
+  "author": "mhm13dev",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "cross-env NODE_ENV=production tsc --project tsconfig.json && tsconfig-replace-paths --project tsconfig.json",
+    "start": "cross-env NODE_ENV=production node dist/index.js",
+    "watch:ts": "cross-env NODE_ENV=development tsc --watch --preserveWatchOutput --noEmit",
+    "watch:tsx": "cross-env NODE_ENV=development tsx watch --clear-screen=false src/index.ts",
+    "start:dev": "concurrently --handle-input -k -n \"TS,TSX\" -p \"[{name}]\" -c \"yellow.bold,cyan.bold\" \"pnpm run watch:ts\" \"pnpm run watch:tsx\"",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.10.1",
+    "concurrently": "^9.1.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^9.16.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.4.2",
+    "tsconfig-replace-paths": "^0.0.14",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.17.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "dotenv-expand": "^12.0.1",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "morgan": "^1.10.0"
+  },
+  "engines": {
+    "node": ">=22.12.0",
+    "pnpm": ">=9.15.0"
+  }
+}
