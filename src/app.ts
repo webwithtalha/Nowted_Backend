@@ -5,6 +5,8 @@ import morgan from "morgan";
 import cors from "cors";
 import { AppError } from "src/utils/index.js";
 
+import userRoutes from "src/routes/userRoutes.js";
+
 const app = express();
 
 app.use(express.json());
@@ -13,6 +15,8 @@ app.use(express.raw());
 app.use(helmet());
 app.use(cors());
 app.use(morgan("short"));
+
+app.use("/api/users", userRoutes);
 
 app.get("/", (_req, res) => {
   res.json({
