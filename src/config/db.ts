@@ -1,7 +1,10 @@
+import { loadEnv } from './load-env.js';
+loadEnv();
+
 import { MongoClient } from "mongodb";
 import type {Db} from "mongodb";
 
-const mongoUri = "mongodb+srv://talha:talha123@nowted-cluster.rftue.mongodb.net/";
+const mongoUri: string = process.env.MONGO_URI || "mongodb://localhost:27017";
 const client = new MongoClient(mongoUri);
 
 let db: Db;
