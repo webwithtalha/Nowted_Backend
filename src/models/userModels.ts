@@ -23,6 +23,11 @@ export const UserModel = {
         return db.collection('users').findOne({_id: new ObjectId(id)});
     },
 
+    async getUserByEmail(db:Db, email:string){
+        return db.collection('users').findOne
+        ({email});
+    },
+
     async updateUser(db:Db, id:string, update:Partial<IUser>){
         return db.collection('users').findOneAndUpdate(
             {_id: new ObjectId(id)},
