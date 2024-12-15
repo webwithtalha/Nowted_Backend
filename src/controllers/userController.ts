@@ -43,9 +43,6 @@ export const loginUser = async (
         }
 
         console.log("User found:", user);
-        console.log("Raw password from req.body:", password);
-        console.log("Trimmed password:", password.trim());
-        console.log("Hashed password in DB:", user.password);
 
         const passwordMatch = await bcrypt.compare(password, user.password);
         console.log("Password match result:", passwordMatch);
@@ -61,13 +58,15 @@ export const loginUser = async (
 
         const tokenPayload = { id: user._id, email: user.email };
         const token: string = jwt.sign(tokenPayload, secretKey, { expiresIn: "1h" });
+        res.setHeader('Set-Cookie', `token=${token}; HttpOnly; Path=/; Max-Age=3600;`);
 
-        res.status(200).json({ success: true, token });
+        return res.status(200).json({ success: true });
     } catch (err) {
         console.error("Error during login:", err);
         next(err);
     }
 };
+
 
 
 export const createUser = async (
