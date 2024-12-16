@@ -32,29 +32,19 @@ export const loginUser = async (
         const db = await connectDB();
         const { email, password } = req.body;
 
-        console.log("Login attempt:", { email, password });
-
         const user = await UserModel.getUserByEmail(db, email) as IUser | null;
         if (!user) {
-            console.log("User not found:", email);
             return res
                 .status(404)
                 .json({ success: false, message: "User not found" });
         }
-
-        console.log("User found:", user);
-
         const passwordMatch = await bcrypt.compare(password, user.password);
-        console.log("Password match result:", passwordMatch);
 
         if (!passwordMatch) {
-            console.log("Invalid credentials for user:", email);
             return res
                 .status(401)
                 .json({ success: false, message: "Invalid credentials" });
         }
-
-        console.log("Password match for user:", email);
 
         const tokenPayload = { id: user._id, email: user.email };
         const token: string = jwt.sign(tokenPayload, secretKey, { expiresIn: "1h" });
@@ -67,6 +57,29 @@ export const loginUser = async (
     }
 };
 
+export const logoutUser = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: true, // Add this if using HTTPS
+            sameSite: "strict",
+            path: "/",
+        });
+
+        // Explicitly set content type as JSON
+        return res
+            .status(200)
+            .header("Content-Type", "application/json")
+            .json({ success: true, message: "Logged out successfully" });
+    } catch (err) {
+        console.error("Error during logout:", err);
+        next(err);
+    }
+};
 
 
 export const createUser = async (
@@ -83,10 +96,7 @@ export const createUser = async (
             return;
         }
 
-        console.log("Raw password:", password);
-
         const hashedPassword = await bcrypt.hash(password, 10);
-        console.log("Hashed password:", hashedPassword);
 
         const userData: Omit<IUser, '_id'> = {
             username,
@@ -95,7 +105,6 @@ export const createUser = async (
         };
 
         const user = await UserModel.createUser(db, userData);
-        console.log("User created with hashed password:", user);
 
         res.status(201).json({ success: true, data: user });
     } catch (err) {

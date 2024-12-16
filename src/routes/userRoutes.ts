@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { createUser, getUsers,deleteUser,getUserById,updateUser, loginUser} from 'src/controllers/userController.js';
+import { createUser, getUsers,deleteUser,getUserById,updateUser, loginUser, logoutUser} from 'src/controllers/userController.js';
 
 const router = express.Router();
 
@@ -10,6 +10,10 @@ router.post('/', (req, res, next) => {
 
 router.post('/login', (req, res, next) => {
   loginUser(req, res, next).catch(next);
+});
+
+router.post('/logout', (req, res, next) => {
+  logoutUser(req, res, next);
 });
 
 router.get('/', (req, res, next) => {
