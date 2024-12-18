@@ -1,14 +1,16 @@
 import express from 'express';
+import validateRequest from '../middleware/validateRequest.js';
 
+import {createUserSchema, loginUserSchema, updateUserSchema} from '../schemas/userSchema.js';
 import { createUser, getUsers,deleteUser,getUserById,updateUser, loginUser, logoutUser} from 'src/controllers/userController.js';
 
 const router = express.Router();
 
-router.post('/', (req, res, next) => {
+router.post('/', validateRequest(createUserSchema), (req, res, next) => {
   createUser(req, res, next).catch(next);
 });
 
-router.post('/login', (req, res, next) => {
+router.post('/login', validateRequest(loginUserSchema), (req, res, next) => {
   loginUser(req, res, next).catch(next);
 });
 
@@ -24,7 +26,7 @@ router.get('/:id', (req, res, next) => {
   getUserById(req, res, next).catch(next);
 });
 
-router.put('/:id', (req, res, next) => {
+router.put('/:id', validateRequest(updateUserSchema), (req, res, next) => {
   updateUser(req, res, next).catch(next);
 });
 

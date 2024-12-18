@@ -1,9 +1,11 @@
 import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-const secretKey = process.env.JWT_SECRET || 'your_secret_key'; // Use an environment variable
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is not defined.');
+}
 
-// Extend the Request interface to include user information
+const secretKey = process.env.JWT_SECRET ;
 interface AuthRequest extends Request {
   user?: { userId: string; email: string };
 }
@@ -12,9 +14,9 @@ export const authenticateToken = (
   req: AuthRequest,
   res: Response,
   next: NextFunction
-): void | Response => { // Updated the return type here
+): void | Response => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Extract Bearer token
+  const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
     return res.status(401).json({ message: 'Access denied. No token provided.' });
@@ -25,7 +27,7 @@ export const authenticateToken = (
       return res.status(403).json({ message: 'Invalid or expired token.' });
     }
 
-    req.user = decoded as { userId: string; email: string }; // Attach user info to request
+    req.user = decoded as { userId: string; email: string };
     next();
   });
 };

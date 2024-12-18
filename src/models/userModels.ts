@@ -28,6 +28,11 @@ export const UserModel = {
         ({email});
     },
 
+    async getUserByEmailOrUsername(db:Db, email:string, username:string){
+        return db.collection('users').findOne
+        ({ $or: [{email}, {username}] });
+    },
+
     async updateUser(db:Db, id:string, update:Partial<IUser>){
         return db.collection('users').findOneAndUpdate(
             {_id: new ObjectId(id)},

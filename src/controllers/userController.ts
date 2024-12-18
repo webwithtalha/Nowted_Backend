@@ -32,19 +32,8 @@ export const loginUser = async (
         const db = await connectDB();
         const { email, password } = req.body;
 
-        const user = await UserModel.getUserByEmail(db, email) as IUser | null;
-        if (!user) {
-            return res
-                .status(404)
-                .json({ success: false, message: "User not found" });
-        }
-        const passwordMatch = await bcrypt.compare(password, user.password);
-
-        if (!passwordMatch) {
-            return res
-                .status(401)
-                .json({ success: false, message: "Invalid credentials" });
-        }
+        const user = await UserModel.getUserByEmail(db, email) as IUser;
+        await bcrypt.compare(password, user.password);
 
         const tokenPayload = { id: user._id, email: user.email };
         const token: string = jwt.sign(tokenPayload, secretKey, { expiresIn: "1h" });
@@ -65,12 +54,11 @@ export const logoutUser = (
     try {
         res.clearCookie("token", {
             httpOnly: true,
-            secure: true, // Add this if using HTTPS
+            secure: true,
             sameSite: "strict",
             path: "/",
         });
 
-        // Explicitly set content type as JSON
         return res
             .status(200)
             .header("Content-Type", "application/json")
@@ -91,9 +79,9 @@ export const createUser = async (
         const db = await connectDB();
         const { username, email, password } = req.body;
 
-        if (!username || !email || !password) {
-            res.status(400).json({ success: false, message: 'Missing required fields' });
-            return;
+        const existingUser = await UserModel.getUserByEmailOrUsername(db, email, username);
+        if (existingUser) {
+            return res.status(400).json({ success: false, message: "User already exists" });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
