@@ -9,7 +9,7 @@ import type { ZodSchema } from "zod"; // ZodSchema for types
 const validateRequest = (schema: ZodSchema) => {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
-      // Explicitly validate req fields using type assertions
+
       schema.parse({
         body: req.body as Record<string, any> || {},
         query: req.query as Record<string, string | string[]> || {},
@@ -17,7 +17,7 @@ const validateRequest = (schema: ZodSchema) => {
       });
       next();
     } catch (error) {
-      // Cast error explicitly
+
       if (error instanceof ZodError) {
         return res.status(400).json({
           errors: error.errors.map((err) => ({
