@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 
 import { connectDB } from "../config/db.js";
 import { UserModel } from "../models/userModels.js";
+import { AppError } from "src/utils/app-error.js";
 
 export interface IUser {
   _id?: ObjectId;
@@ -35,17 +36,13 @@ export const loginUser = async (
     const user = (await UserModel.getUserByEmail(db, email)) as IUser;
 
     if (!user) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found" });
+      throw new AppError("User Not Found", 404);
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Invalid credentials" });
+      throw new AppError("Invalid Password", 401);
     }
 
     const tokenPayload = { id: user._id, email: user.email };

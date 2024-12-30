@@ -9,25 +9,18 @@ import type { ZodSchema } from "zod"; // ZodSchema for types
 const validateRequest = (schema: ZodSchema) => {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
-
       schema.parse({
-        body: req.body as Record<string, any> || {},
-        query: req.query as Record<string, string | string[]> || {},
-        params: req.params as Record<string, string> || {},
+        body: (req.body as Record<string, any>) || {},
+        query: (req.query as Record<string, string | string[]>) || {},
+        params: (req.params as Record<string, string>) || {},
       });
       next();
     } catch (error) {
-
       if (error instanceof ZodError) {
-        return res.status(400).json({
-          errors: error.errors.map((err) => ({
-            path: err.path.join("."),
-            message: err.message,
-          })),
-        });
+        return next(error);
       }
       // Fallback for other unknown errors
-      return res.status(500).json({ message: "Internal Server Error" });
+      return next(error);
     }
   };
 };

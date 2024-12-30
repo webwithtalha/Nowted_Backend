@@ -6,6 +6,7 @@ import cors from "cors";
 import { AppError } from "src/utils/index.js";
 
 import userRoutes from "src/routes/userRoutes.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 
@@ -13,10 +14,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.raw());
 app.use(helmet());
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(morgan("short"));
 
 app.use("/api/users", userRoutes);
+
+app.use(errorHandler);
 
 app.get("/", (_req, res) => {
   res.json({
